@@ -10,6 +10,8 @@ void setup() {
 
   // Print "Hello, World!" to the serial port
   TRACE("Hello, World!\n");
+
+  // Connect to WiFi
   if (connectToWiFi(WIFI_SSID, WIFI_PASSWORD)) {
     ip = WiFi.localIP();
     TRACE("\n");
@@ -31,14 +33,6 @@ void setup() {
     handleWifiConnectionError("WiFi connection error", true);
   }
 }
-
-void loop() {
-  // put your main code here, to run repeatedly:
-  TRACE("Hello, World loop!\n");
-  delay(1000);
-}
-
-
 
 bool isConnected() {
   return (WiFi.status() == WL_CONNECTED);
@@ -70,14 +64,20 @@ bool connectToWiFi(const char* ssid, const char* password, int max_tries, int pa
     TRACE("Error setting up MDNS responder!\"");
     delay(1000);
   }
-
   return isConnected();
 }
-
 
 void handleWifiConnectionError(String error, bool restart) {
   TRACE("Error: %s\n", error.c_str());
   TRACE("Rebooting now...\n");
   delay(1500);
   ESP.restart();
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  // Handle OTA updates
+  ArduinoOTA.handle();
+  TRACE("Hello, World loop!\n");
+  delay(1000);
 }

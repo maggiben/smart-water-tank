@@ -35,7 +35,7 @@
 
 #pragma once
 #include <Arduino.h>
-#if defined(ESP8266)
+#if defined(ESP8266) // or ARDUINO_ARCH_ESP8266
   #pragma message "ESP8266 CPU"
   #include <ESP8266Wifi.h>
   #include <ESP8266mDNS.h>
