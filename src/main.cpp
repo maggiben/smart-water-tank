@@ -17,7 +17,7 @@ void setup() {
     TRACE("\n");
     TRACE("Connected: "); PRINT(ip); TRACE("\n");
 
-    // // Set up the OTA end callback
+    // Set up the OTA end callback
     ArduinoOTA.onEnd([]() {
       TRACE("OTA update successful, rebooting...\n");
       delay(500);
@@ -26,8 +26,15 @@ void setup() {
 
     ArduinoOTA.setHostname(HOSTNAME);
     // Initialize OTA
-    ArduinoOTA.begin();  
+    ArduinoOTA.begin();
 
+    // Enable CORS header in webserver results
+    server.enableCORS(true);
+    server.on("/api/heartbeat", HTTP_GET, []() {
+      server.send(200, "text/plain", String(millis()));
+    });
+    server.begin();
+    
   } else {
     TRACE("\n");  
     handleWifiConnectionError("WiFi connection error", true);
@@ -75,9 +82,10 @@ void handleWifiConnectionError(String error, bool restart) {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  // Handle HTTP requests
+  server.handleClient();
   // Handle OTA updates
   ArduinoOTA.handle();
-  TRACE("Hello, World loop!\n");
-  delay(1000);
+  TRACE("Hello, World Uptime %lu: !\n", (millis() / 1000));
+  delay(500);
 }

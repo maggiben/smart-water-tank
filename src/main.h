@@ -39,22 +39,33 @@
   #pragma message "ESP8266 CPU"
   #include <ESP8266Wifi.h>
   #include <ESP8266mDNS.h>
+  #include <ESP8266WebServer.h>
 #elif defined(ESP32)
   #pragma message "ESP32 CPU"
   #include <WiFi.h>
   #include <ESPmDNS.h>
+  #include <WebServer.h>
 #else
   #pragma message "Bad platform not ESP8266 or ESP32"
 #endif
 
 #include <ArduinoOTA.h>
-// #include <WebServer.h>
 #include <ArduinoJson.h>
 #include "constants.h"
 
 // Device IP Address
 IPAddress ip;
 
+#if defined(ESP8266) // or ARDUINO_ARCH_ESP8266
+  ESP8266WebServer server(HTTP_PORT);
+#elif defined(ESP32)
+  // Need a WebServer for http access on port 80.
+  WebServer server(HTTP_PORT);
+#else
+  #pragma message "Bad platform not ESP8266 or ESP32"
+#endif
+
+// Functions
 bool isConnected();
-bool connectToWiFi(const char* ssid, const char* password, int max_tries = 20, int pause = 500);
+bool connectToWiFi(const char* ssid, const char* password, int max_tries = 60, int pause = 1000);
 void handleWifiConnectionError(String error, bool restart);
