@@ -67,5 +67,6 @@ IPAddress ip;
 
 // Functions
 bool isConnected();
-bool connectToWiFi(const char* ssid, const char* password, int max_tries = 60, int pause = 1000);
+bool connectToWiFi(const char* ssid, const char* password, int max_tries = 120, int pause = 1000);
 void handleWifiConnectionError(String error, bool restart);
+void wakup();
